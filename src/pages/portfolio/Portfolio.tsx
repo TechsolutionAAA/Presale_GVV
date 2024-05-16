@@ -6,6 +6,8 @@ import { colors } from "../../core/constants/styleguide.const";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import ChartComponent from "../../components/Chart/Chart";
+import { H1 } from "../../components/styleguide/styleguide";
+import DateTab from "./chidren/DateTab";
 
 const Portfolio = () => {
   return (
@@ -49,6 +51,13 @@ const Portfolio = () => {
           </CardGroup>
         </CenterPart>
         <Rightpart>
+          <ChartTitle>{`Real Annual Percentage Yield`}</ChartTitle>
+          <DateTabPart>
+            <DateTab content="Day" />
+            <DateTab content="Week" />
+            <DateTab content="Month" />
+            <DateTab content="Year" />
+          </DateTabPart>
           <ChartComponent />
         </Rightpart>
       </GVVIndexContainer>
@@ -64,16 +73,19 @@ const GVVIndexContainer = styled.div`
   flex-direction: row;
   display: flex;
   background-color: ${colors.mainColor};
-  justify-content: space-around;
-  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  align-items: start;
   padding: 48px 0px 42px 0px;
   @media screen and (max-width: 1250px) {
     flex-direction: column;
     margin-top: 50px;
+    align-items: center;
   }
   @media screen and (max-width: 420px) {
     flex-direction: column;
     margin-top: 70px;
+    align-items: center;
   }
 `;
 
@@ -186,6 +198,7 @@ const CardGroup = styled.div`
   color: white;
   font-style: italic;
   font-size: 16px;
+  justify-content: center;
 `;
 
 const CardColor = styled.div`
@@ -195,10 +208,39 @@ const CardColor = styled.div`
   justify-content: space-between;
 `;
 const Rightpart = styled.div`
+  width: 531px;
   display: flex;
   flex-direction: column;
+  border-radius: 10px;
+  background-color: ${colors.neutrals5};
   gap: 20px;
+  justify-content: center;
+  align-items: center;
   font-family: ABeeZee;
   font-weight: 400;
+  padding: 20px 10px 20px 10px;
+  @media screen and (max-width: 550px) {
+    width: 90%;
+  }
+`;
+
+const ChartTitle = styled(H1)`
+  font-family: ABeeZee;
+  font-weight: 400;
+  color: ${colors.mainColor};
+  font-size: 26px;
+  line-height: 32px;
+`;
+
+const DateTabPart = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  
+  @media screen and (max-width: 550px) {
+    flex-direction: column;
+  }
 `;
 export default Portfolio;
