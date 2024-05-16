@@ -13,6 +13,9 @@ import Features from "./pages/features/Features";
 import Home from "./pages/home/Home";
 import Sign from "./pages/sign/sign";
 import Round from "./pages/round/Round";
+import Round1 from "./pages/round/Round1";
+import Round2 from "./pages/round/Round2";
+import Round4 from "./pages/round/Round4";
 import Portfolio from "./pages/portfolio/Portfolio";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ProtectedRouter from "./components/layout/ProtectedRouter";
@@ -49,6 +52,18 @@ function App() {
     {
       path: "/round",
       element: <Round />,
+    },
+    {
+      path: "/round1",
+      element: <Round1 />,
+    },
+    {
+      path: "/round2",
+      element: <Round2 />,
+    },
+    {
+      path: "/round4",
+      element: <Round4 />,
     },
     {
       path: "/dashboard",

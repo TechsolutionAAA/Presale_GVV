@@ -69,8 +69,8 @@ const Header = () => {
                 <StyledLink to={homePath()}>{`Home`}</StyledLink>
                 <StyledLink to={""}>{`Page`}</StyledLink>
                 <StyledLink to={"/portfolio"}>{`Portfolio`}</StyledLink>
-                <StyledLink to={featuresPath()}>{`Features`}</StyledLink>
-                <StyledLink to={faqPath()}>{`Blog`}</StyledLink>
+                <StyledLink to={""}>{`Features`}</StyledLink>
+                <StyledLink to={""}>{`Blog`}</StyledLink>
                 <StyledLink to={""}>{`Contact`}</StyledLink>
               </LinkGroup>
             </Then>
@@ -146,7 +146,7 @@ const StyledLink = styled(Link)`
   padding: 0px 20px;
   text-decoration: none;
   font-weight: 300;
-  color: ${colors.neutrals8};
+  color: ${colors.primaryYellow};
   &:hover {
     color: ${colors.primaryYellow};
   }

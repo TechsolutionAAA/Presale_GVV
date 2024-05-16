@@ -1,31 +1,57 @@
+import { useState } from "react";
 import styled from "styled-components";
-import ChatBrowser from "../../assets/webroot/img/index/chart_browser_scaled.svg";
 import RoundImage from "../../assets/webroot/img/index/roundimage.svg";
 import play from "../../assets/webroot/img/index/play.jpg";
-import Gloval from "../../assets/webroot/img/index/Group.png";
-import LinerChat from "../../assets/webroot/img/index/liner_chat.png";
-import Rectangle from "../../assets/webroot/img/index/rectangle.png";
 import { colors } from "../../core/constants/styleguide.const";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
-import React, { useState } from "react";
 
 const Round = () => {
-  const [count, setCount] = useState(0);
+  const [count1, setCount1] = useState(0);
+  const [count2, setCount2] = useState(0);
+  const [count3, setCount3] = useState(0);
 
-  const handlePlus = () => {
-    let c: number = count;
-    setCount(c + 1);
+  const handlePlus1 = () => {
+    let c: number = count1;
+    setCount1(c + 1);
   };
-
-  const handleMinus = () => {
-    let c: number = count;
-    setCount(c - 1);
+  
+  const handleMinus1 = () => {
+    let c: number = count1;
     if (c <= 0) {
-      setCount(0);
+      setCount1(0);
       return;
     } else {
-      setCount(c - 1);
+      setCount1(c - 1);
+    }
+  };
+
+  const handlePlus2 = () => {
+    let c: number = count2;
+    setCount2(c + 1);
+  };
+
+  const handleMinus2 = () => {
+    let c: number = count2;
+    if (c <= 0) {
+      setCount2(0);
+      return;
+    } else {
+      setCount2(c - 1);
+    }
+  };
+  const handlePlus3 = () => {
+    let c: number = count3;
+    setCount3(c + 1);
+  };
+
+  const handleMinus3 = () => {
+    let c: number = count3;
+    if (c <= 0) {
+      setCount3(0);
+      return;
+    } else {
+      setCount3(c - 1);
     }
   };
 
@@ -33,56 +59,25 @@ const Round = () => {
     <>
       <Header />
       <GVVIndexContainer>
-        <LeftPart>
-          <LeftTopCard>
+        <DescriptionSection>
+          <VideoCard>
+            <VideoCardImage src={play} />
+            Video Guide to Buy GVV
+          </VideoCard>
+          <ChartCard>
             <RoundImageBox src={RoundImage} />
             <LeftCardGroup>
               <CardGroup>
                 <CardColor style={{ backgroundColor: "#DEEBBC" }} />
-                67% Purchased
+                0% Purchased
               </CardGroup>
               <CardGroup>
                 <CardColor style={{ backgroundColor: "#CBFB45" }} />
-                33% Unclaimed
+                0% Unclaimed
               </CardGroup>
             </LeftCardGroup>
-          </LeftTopCard>
-          <LeftBottomCard>
-            <LeftBottomCardImage src={play} />
-            Video Guide to Buy GVV
-          </LeftBottomCard>
-        </LeftPart>
-        <Rightpart>
-          <RightTopCard>
-            <RoundRightTitle>PUBLIC SALES ROUND</RoundRightTitle>
-            <RoundRightSmTitle>
-              $GVV 1 - <RoundRightSmcolTitle>$0.45</RoundRightSmcolTitle>
-            </RoundRightSmTitle>
-            <RoundContent>
-              Invest in $GVV and be a part of building the next frontier of
-              emerging tech lasting across generations. Your $GVV is your
-              tokenized financial freedom
-            </RoundContent>
-            <br></br>
-            <RoundRightSmTitle>
-              $GVV 1 - <RoundRightSmcolTitle>$0.45</RoundRightSmcolTitle>
-            </RoundRightSmTitle>
-            <RoundRightSmTitle>
-              The Price will be - <RoundRightSmcolTitle>$ {(0.45 * count).toFixed(2)}</RoundRightSmcolTitle>
-            </RoundRightSmTitle>
-            <RoundButtonGroup>
-              <CountNumberBox>
-                <Countnumberminus onClick={handleMinus}>-</Countnumberminus>
-                <Countnumber
-                  value={count}
-                  onChange={(e) => setCount(parseInt(e.target.value))}
-                ></Countnumber>
-                <Countnumberplus onClick={handlePlus}>+</Countnumberplus>
-              </CountNumberBox>
-              <RoundButton>BUY {count} $GVV</RoundButton>
-            </RoundButtonGroup>
-          </RightTopCard>
-          <RightBottomCard>
+          </ChartCard>
+          <TokenDataCard>
             <Bigcounttitle>
               Total Supply - <Count> $GVV 150,000,000</Count>
             </Bigcounttitle>
@@ -98,8 +93,70 @@ const Round = () => {
             <Bigcounttitle>
               Unique Buyers - <Count> 15,000</Count>
             </Bigcounttitle>
-          </RightBottomCard>
-        </Rightpart>
+          </TokenDataCard>
+        </DescriptionSection>
+        <PresaleSection>
+          <PresaleMainCard>
+            <RoundRightTitle>Private SALES Stage 1</RoundRightTitle>
+            <RoundRightSmTitle>
+              $GVV 1 - <RoundRightSmcolTitle>$0.23</RoundRightSmcolTitle>
+            </RoundRightSmTitle>
+            <RoundRightSmTitle>
+              The Price will be - <RoundRightSmcolTitle>$ {(0.23 * count1).toFixed(2)}</RoundRightSmcolTitle>
+            </RoundRightSmTitle>
+            <RoundButtonGroup>
+              <CountNumberBox>
+                <Countnumberminus onClick={handleMinus1}>-</Countnumberminus>
+                <Countnumber
+                  value={count1}
+                  onChange={(e) => setCount1(parseInt(e.target.value))}
+                ></Countnumber>
+                <Countnumberplus onClick={handlePlus1}>+</Countnumberplus>
+              </CountNumberBox>
+              <RoundButton>BUY {count1} $GVV</RoundButton>
+            </RoundButtonGroup>
+          </PresaleMainCard>
+          <PresaleMainCard>
+            <RoundRightTitle>Private SALES Stage 2</RoundRightTitle>
+            <RoundRightSmTitle>
+              $GVV 1 - <RoundRightSmcolTitle>$0.34</RoundRightSmcolTitle>
+            </RoundRightSmTitle>
+            <RoundRightSmTitle>
+              The Price will be - <RoundRightSmcolTitle>$ {(0.34 * count2).toFixed(2)}</RoundRightSmcolTitle>
+            </RoundRightSmTitle>
+            <RoundButtonGroup>
+              <CountNumberBox>
+                <Countnumberminus onClick={handleMinus2}>-</Countnumberminus>
+                <Countnumber
+                  value={count2}
+                  onChange={(e) => setCount2(parseInt(e.target.value))}
+                ></Countnumber>
+                <Countnumberplus onClick={handlePlus2}>+</Countnumberplus>
+              </CountNumberBox>
+              <RoundButton>BUY {count2} $GVV</RoundButton>
+            </RoundButtonGroup>
+          </PresaleMainCard>
+          <PresaleMainCard>
+            <RoundRightTitle>Public SALES Round</RoundRightTitle>
+            <RoundRightSmTitle>
+              $GVV 1 - <RoundRightSmcolTitle>$0.45</RoundRightSmcolTitle>
+            </RoundRightSmTitle>
+            <RoundRightSmTitle>
+              The Price will be - <RoundRightSmcolTitle>$ {(0.45 * count3).toFixed(2)}</RoundRightSmcolTitle>
+            </RoundRightSmTitle>
+            <RoundButtonGroup>
+              <CountNumberBox>
+                <Countnumberminus onClick={handleMinus3}>-</Countnumberminus>
+                <Countnumber
+                  value={count3}
+                  onChange={(e) => setCount3(parseInt(e.target.value))}
+                ></Countnumber>
+                <Countnumberplus onClick={handlePlus3}>+</Countnumberplus>
+              </CountNumberBox>
+              <RoundButton>BUY {count3} $GVV</RoundButton>
+            </RoundButtonGroup>
+          </PresaleMainCard>
+        </PresaleSection>
       </GVVIndexContainer>
       <Footer />
     </>
@@ -110,7 +167,8 @@ const GVVIndexContainer = styled.div`
   margin-top: 50px;
   align-items: center;
   width: 100%;
-  flex-direction: row;
+  height: 100vh;
+  flex-direction: column;
   display: flex;
   gap: 150px;
   background-color: ${colors.mainColor};
@@ -129,15 +187,20 @@ const LeftCardGroup = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const LeftPart = styled.div`
+const DescriptionSection = styled.div`
+  width: 100%;
+  margin-left: 100px;
+  margin-right: 100px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   text-align: left;
   @media (max-width: 800px) {
     flex-direction: column;
   }
 `;
-const LeftTopCard = styled.div`
+const ChartCard = styled.div`
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -145,7 +208,7 @@ const LeftTopCard = styled.div`
     flex-direction: column;
   }
 `;
-const LeftBottomCard = styled.div`
+const VideoCard = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 24px;
@@ -154,13 +217,13 @@ const LeftBottomCard = styled.div`
   font-family: ABeeZee;
   color: white;
   width: 349px;
-  margin-top: 40px;
+  margin-left: 40px;
   @media (max-width: 800px) {
     font-size: 20px;
     width: 100%;
   }
 `;
-const LeftBottomCardImage = styled.img`
+const VideoCardImage = styled.img`
   width: 349px;
   height: 223px;
   @media (max-width: 1200px) {
@@ -180,10 +243,13 @@ const RoundImageBox = styled.img`
     width: 60%;
   }
 `;
-const Rightpart = styled.div`
+const PresaleSection = styled.div`
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 70px;
   font-family: ABeeZee;
   font-weight: 400;
   @media (max-width: 800px) {
@@ -215,19 +281,7 @@ const RoundRightSmTitle = styled.div`
 const RoundRightSmcolTitle = styled.div`
   color: #f3f3f3;
 `;
-const RoundContent = styled.div`
-  margin-top: 50px;
-  color: #b3b3b3;
-  font-size: 24px;
-  width: 550px;
-  @media (max-width: 800px) {
-    font-size: 20px;
-    width: 80%;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 30px;
-  }
-`;
+
 const CountNumberBox = styled.div`
   display: flex;
   color: #cbfb45;
@@ -293,20 +347,17 @@ const RoundButton = styled.div`
   font-size: 20px;
   margin-left: 40px;
   padding: 10px 15px;
+  cursor: pointer;
   @media (max-width: 800px) {
     font-size: 17px;
   }
-  &:hover {
-    cursor: pointer;
-  }
 `;
-const RightTopCard = styled.div`
-  padding: 20px;
+const PresaleMainCard = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const RightBottomCard = styled.div`
-  margin-top: 20px;
+const TokenDataCard = styled.div`
+  margin-right: 40px;
   display: flex;
   flex-direction: column;
   @media (max-width: 800px) {

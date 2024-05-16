@@ -12,15 +12,15 @@ const Sign = () => {
         <SignContianer>
           <StyledInput placeholder="Email*"></StyledInput>
           <StyledSelect>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
+            <StyledOption>Country</StyledOption>
+            <StyledOption>USA</StyledOption>
+            <option>Canada</option>
+            <option>United Kindom</option>
           </StyledSelect>
-          <ProceedButton to={"/round"}>{`Proceed to Purchase`}</ProceedButton>
+          <ProceedButton to={"/round1"}>{`Proceed to Purchase`}</ProceedButton>
         </SignContianer>
       </OverviewIndexContainer>
-      <Footer />
+      <Footer/>
     </>
   );
 };
@@ -36,7 +36,7 @@ const OverviewIndexContainer = styled.div`
   justify-content: center;
   align-items: center;
   font-family: ABeeZee;
-  padding: 48px 0px 42px 0px;
+  padding: 140px 0px 42px 0px;
 `;
 
 const SignContianer = styled.div`
@@ -76,6 +76,7 @@ const StyledInput = styled.input`
   padding: 20px 10px;
   margin: 0px auto;
   width: 90%;
+  color: ${colors.neutrals7};
 `;
 const StyledSelect = styled.select`
   border: none;
@@ -85,5 +86,13 @@ const StyledSelect = styled.select`
   padding: 20px 10px;
   margin: 60px auto;
   width: 93%;
+  color: ${colors.neutrals7};
 `;
+
+const StyledOption = styled.option`
+  background-color: rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  height: 50px;
+`;
+
 export default Sign;

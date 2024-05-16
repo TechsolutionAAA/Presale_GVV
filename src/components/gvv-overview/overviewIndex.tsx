@@ -78,7 +78,7 @@ const GVVIndexContainer = styled.div`
   margin: 50px auto;
   flex-direction: row;
   display: flex;
-  gap: 150px;
+  gap: 50px;
   background-color: ${colors.mainColor};
   justify-content: center;
   align-items: start;
@@ -131,6 +131,7 @@ const CenterImg = styled.img`
 
 const RightPart = styled.div`
   padding-top: 50px;
+  padding-left: -30px;
   display: flex;
   flex-direction: column;
   color: white;
@@ -191,12 +192,14 @@ const BuyGVVButton = styled(ButtonPrimarySmall)`
   border-radius: 0px;
   font-style: italic;
   color: ${colors.mainColor};
+  z-index: 2;
 `;
 
 const ReadWhitePaperButton = styled(ButtonPrimarySmall)`
   border: solid 1px ${colors.neutrals8};
   border-radius: 0px;
   background-color: ${colors.mainColor};
+  z-index: 2;
 `;
 
 export default GVVIndex;

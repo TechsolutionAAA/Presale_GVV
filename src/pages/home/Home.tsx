@@ -86,6 +86,7 @@ const Content = styled.div`
 
 const LoaderSection = styled.div`
   padding: 200px 100px;
+  margin-bottom: 1000px;
 `;
 
 const MainPageSection = styled.div`

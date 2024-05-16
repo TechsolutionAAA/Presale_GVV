@@ -54,9 +54,9 @@ const Round = () => {
         </LeftPart>
         <Rightpart>
           <RightTopCard>
-            <RoundRightTitle>PUBLIC SALES ROUND</RoundRightTitle>
+            <RoundRightTitle>Private SALES Stage 1</RoundRightTitle>
             <RoundRightSmTitle>
-              $GVV 1 - <RoundRightSmcolTitle>$0.45</RoundRightSmcolTitle>
+              $GVV 1 - <RoundRightSmcolTitle>$0.23</RoundRightSmcolTitle>
             </RoundRightSmTitle>
             <RoundContent>
               Invest in $GVV and be a part of building the next frontier of
@@ -65,10 +65,10 @@ const Round = () => {
             </RoundContent>
             <br></br>
             <RoundRightSmTitle>
-              $GVV 1 - <RoundRightSmcolTitle>$0.45</RoundRightSmcolTitle>
+              $GVV 1 - <RoundRightSmcolTitle>$0.23</RoundRightSmcolTitle>
             </RoundRightSmTitle>
             <RoundRightSmTitle>
-              The Price will be - <RoundRightSmcolTitle>$ {(0.45 * count).toFixed(2)}</RoundRightSmcolTitle>
+              The Price will be - <RoundRightSmcolTitle>$ {(0.23 * count).toFixed(2)}</RoundRightSmcolTitle>
             </RoundRightSmTitle>
             <RoundButtonGroup>
               <CountNumberBox>
