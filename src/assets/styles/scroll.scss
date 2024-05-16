@@ -1,0 +1,40 @@
+
+$scrollbar-button-color: rgba(255, 255, 255, 0.2);
+$scrollbar-track-color: transparent;
+$scrollbar-width: 4px;
+
+@mixin hideScrollBar($className) {
+    #{$className}::-webkit-scrollbar {
+      display: none;
+    }
+    #{$className} {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  }
+
+  @mixin customScrollBar($className, $thumb-color: $scrollbar-button-color) {
+    #{$className}::-webkit-scrollbar {
+      width: $scrollbar-width;
+      height: $scrollbar-width;
+      background-color: transparent;
+      -webkit-appearance: none;
+    }
+  
+    #{$className}::-webkit-scrollbar {
+      height: $scrollbar-width;
+      width: $scrollbar-width;
+    }
+    #{$className}::-webkit-scrollbar-track {
+      background: $scrollbar-track-color;
+    }
+    #{$className}::-webkit-scrollbar-thumb {
+      border-radius: 60px;
+      background-color: $thumb-color;
+    }
+  
+    #{$className} {
+      scrollbar-width: $scrollbar-width;
+      scrollbar-color: $thumb-color $scrollbar-track-color;
+    }
+  }

@@ -1,0 +1,17 @@
+@import "./color.scss";
+
+.positive {
+    color: $positive-color !important
+}
+
+.neutral {
+    color: $neutral-color !important
+}
+
+.negative {
+    color: $negative-color !important
+}
+
+.rejected {
+    color: $lilac !important
+}

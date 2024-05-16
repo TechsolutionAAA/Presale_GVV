@@ -1,0 +1,51 @@
+// @import "../../assets/styles/color.scss";
+// @import "../../assets/styles/sizes.scss";
+// @import "../../assets/styles/responsive.scss";
+
+.base-page {
+  background-color: $gray-darkest;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: $almost-white;
+
+  .base-page-content {
+    flex-grow: 1;
+    min-height: 300px;
+
+    max-width: 100%;
+    margin: 0px auto;
+
+    @include responsive(padding-top, 64px, 72px, 96px);
+    @include responsive(padding-bottom, 64px, 72px, 96px);
+    padding-left: $screen-padding;
+    padding-right: $screen-padding;
+    @include max-width-auto-padding();
+    position: relative;
+  }
+
+  &.profile-mobile-styling {
+    .header-container .header {
+      @media screen and (max-width: 576px) {
+        padding: 20px 32px;
+      }
+      @media screen and (max-width: 320px) {
+        padding: 20px 4px;
+      }
+    }
+    .base-page-content {
+      @media screen and (max-width: 576px) {
+        padding: 50px 32px;
+      }
+      @media screen and (max-width: 320px) {
+        padding: 50px 4px;
+      }
+    }
+  }
+
+  .header-container {
+    z-index: 30;
+    position: sticky;
+    top: 0px;
+  }
+}

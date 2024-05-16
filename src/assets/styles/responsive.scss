@@ -1,0 +1,56 @@
+@import "./sizes.scss";
+
+@mixin max-width-auto-padding($max-content-width: $max-content-width) {
+    @media (min-width: $max-content-width + 40px) {
+        padding-left: calc((100% - #{$max-content-width}) / 2);
+        padding-right: calc((100% - #{$max-content-width}) / 2);
+    }
+}
+
+@mixin responsive(
+    $property,
+    $mobile-value: null,
+    $tablet-value: null,
+    $desktop-value: null,
+    $tablet-desktop-threshold: $tablet-desktop-threshold,
+    $mobile-tablet-threshold: $mobile-tablet-threshold
+) {
+    @if ($desktop-value) {
+        #{$property}: $desktop-value;
+    }
+    @if ($tablet-value) {
+        @media (max-width: #{$tablet-desktop-threshold}) {
+            #{$property}: $tablet-value;
+        }
+    }
+    @if ($mobile-value) {
+        @media (max-width: #{$mobile-tablet-threshold}) {
+            #{$property}: $mobile-value;
+        }
+    }
+}
+
+@mixin mobile-only {
+    @media (max-width: #{$mobile-tablet-threshold}) {
+        @content;
+    }
+}
+
+@mixin desktop-only {
+    @media (min-width: #{$tablet-desktop-threshold}) {
+        @content;
+    }
+}
+
+@mixin responsive-hover($className) {
+    @media (hover: hover) {
+        #{$className}:hover {
+            @content;
+        }
+    }
+    @media (hover: none) {
+        #{$className}:active {
+            @content;
+        }
+    }
+}
