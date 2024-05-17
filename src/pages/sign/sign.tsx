@@ -1,26 +1,107 @@
+import { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { colors } from "../../core/constants/styleguide.const";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
+import { useAppDispatch, useAppSelector } from "../../core/hooks/rtkHooks";
+import { Else, If, Then } from "react-if";
+import { setShowAlertAction } from "../../core/store/slices/alertSlice";
 
 const Sign = () => {
+  const [email, SetEmail] = useState("");
+  const { roundNumber } = useAppSelector((state) => state.round);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const checkEmailValidation = (email: string): boolean => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
+
+  const handleClick = () => {
+    if (email === "") {
+      dispatch(
+        setShowAlertAction({
+          showAlert: true,
+          props: {
+            type: "error",
+            content: "Email cannot be blank!",
+          },
+        })
+      );
+      setTimeout(
+        () => dispatch(setShowAlertAction({ showAlert: false })),
+        2000
+      );
+    } else if (checkEmailValidation(email) === false) {
+      dispatch(
+        setShowAlertAction({
+          showAlert: true,
+          props: {
+            type: "error",
+            content: "Please enter exact email type!",
+          },
+        })
+      );
+      setTimeout(
+        () => dispatch(setShowAlertAction({ showAlert: false })),
+        2000
+      );
+    } else {
+      const navigateLink: string =
+        roundNumber === 1 || roundNumber === 2
+          ? "/round" + roundNumber
+          : "/round";
+      navigate(navigateLink);
+    }
+  };
   return (
     <>
       <Header />
       <OverviewIndexContainer>
         <SignContianer>
-          <StyledInput placeholder="Email*"></StyledInput>
+          <StyledInput
+            placeholder="Email*"
+            value={email}
+            onChange={(e) => SetEmail(e.target.value as string)}
+          ></StyledInput>
           <StyledSelect>
             <StyledOption>Country</StyledOption>
             <StyledOption>USA</StyledOption>
             <option>Canada</option>
             <option>United Kindom</option>
           </StyledSelect>
-          <ProceedButton to={"/round1"}>{`Proceed to Purchase`}</ProceedButton>
+          <If condition={roundNumber === 1}>
+            <Then>
+              <ProceedButton onClick={handleClick}>
+                {`Proceed to Purchase`}
+                <br></br>
+                {`(At Round ${roundNumber})`}
+              </ProceedButton>
+            </Then>
+            <Else>
+              <If condition={roundNumber === 2}>
+                <Then>
+                  <ProceedButton onClick={handleClick}>
+                    {`Proceed to Purchase`}
+                    <br></br>
+                    {`(At Round ${roundNumber})`}
+                  </ProceedButton>
+                </Then>
+                <Else>
+                  <ProceedButton onClick={handleClick}>
+                    {`Proceed to Purchase`}
+                    <br></br>
+                    {`(At Public Round)`}
+                  </ProceedButton>
+                </Else>
+              </If>
+            </Else>
+          </If>
         </SignContianer>
       </OverviewIndexContainer>
-      <Footer/>
+      <Footer />
     </>
   );
 };
@@ -55,7 +136,7 @@ const SignContianer = styled.div`
     margin-top: 80px;
   }
 `;
-const ProceedButton = styled(Link)`
+const ProceedButton = styled.div`
   width: 190px;
   margin: 0 auto;
   margin-top: 30px;
@@ -66,6 +147,7 @@ const ProceedButton = styled(Link)`
   font-style: italic;
   &:hover {
     color: black !important;
+    cursor: pointer;
   }
 `;
 const StyledInput = styled.input`

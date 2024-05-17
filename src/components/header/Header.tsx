@@ -1,7 +1,8 @@
+import React, { useState } from "react";
 import { Else, If, Then } from "react-if";
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
-import { useAppSelector } from "../../core/hooks/rtkHooks";
+import { useAppDispatch, useAppSelector } from "../../core/hooks/rtkHooks";
 
 import Logo from "../../assets/webroot/img/logos/logo(38x26).png";
 import { RESPONSIVE } from "../../core/constants/responsive.const";
@@ -11,12 +12,43 @@ import {
   faqPath,
   featuresPath,
   homePath,
+  portfolioPath,
+  round1Path,
+  signPath,
+  blogPath,
+  contactPath
 } from "../../core/util/pathBuilder.util";
 import BurgerButton from "../button/burger-button/BurgerButton";
 import AlertComponent from "../alert/AlertComponent";
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
-import {  createWeb3Modal } from "@web3modal/wagmi/react";
+import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { arbitrum, mainnet } from "wagmi/chains";
+import { setRound } from "../../core/store/slices/roundSlice";
+import { COMMONS } from "../../assets/i18n/commons";
+import BuyWithModal from "../modal/children/modal-content/BuyWithModal";
+
+export const navLinks = [
+  {
+    path: homePath(),
+    title: "Home"
+  },
+  {
+    path: portfolioPath(),
+    title: "Portfolio"
+  },
+  {
+    path: signPath(),
+    title: "Pages"
+  },
+  {
+    path: blogPath(),
+    title: "Blog"
+  },
+  {
+    path: contactPath(),
+    title: "Contact"
+  }
+];
 
 const projectId = "760f8d127d7a9b7c0dbb7dfc6ee6d1ca";
 if (!projectId) {
@@ -47,9 +79,12 @@ createWeb3Modal({
 });
 
 const Header = () => {
+  const [showPagesDropdown, setShowPagesDropdown] = useState(false);
   const { smallerThanLarge } = useWatchResize();
+  const dispatch = useAppDispatch();
 
   const { showAlert } = useAppSelector((state) => state.alert);
+  const showSignInModal = useAppSelector((state) => state.modal);
 
   return (
     <>
@@ -67,7 +102,36 @@ const Header = () => {
             <Then>
               <LinkGroup>
                 <StyledLink to={homePath()}>{`Home`}</StyledLink>
-                <StyledLink to={""}>{`Page`}</StyledLink>
+                <NavPageDiv>
+                  {showPagesDropdown && (
+                    <PageDropDownDiv
+                      onMouseLeave={(e) => setShowPagesDropdown(false)}
+                    >
+                      <StyledPagesLink
+                        to="/sign"
+                        onClick={(e) =>
+                          dispatch(setRound({ roundNumber: 1 }))
+                        }
+                      >{`Private Sales Stage 1`}</StyledPagesLink>
+                      <StyledPagesLink
+                        to="/sign"
+                        onClick={(e) =>
+                          dispatch(setRound({ roundNumber: 2 }))
+                        }
+                      >{`Private Sales Stage 2`}</StyledPagesLink>
+                      <StyledPagesLink
+                        to="/sign"
+                        onClick={(e) =>
+                          dispatch(setRound({ roundNumber: 3 }))
+                        }
+                      >{`Public Sales Round`}</StyledPagesLink>
+                    </PageDropDownDiv>
+                  )}
+                  <StyledLink
+                    to={""}
+                    onMouseEnter={(e) => setShowPagesDropdown(true)}
+                  >{`Page`}</StyledLink>
+                </NavPageDiv>
                 <StyledLink to={"/portfolio"}>{`Portfolio`}</StyledLink>
                 <StyledLink to={""}>{`Features`}</StyledLink>
                 <StyledLink to={""}>{`Blog`}</StyledLink>
@@ -85,6 +149,7 @@ const Header = () => {
         </NavigateSection>
       </StyledHeader>
       {showAlert && <AlertComponent />}
+      {showSignInModal && <BuyWithModal />}
     </>
   );
 };
@@ -141,6 +206,7 @@ const NavigateSection = styled.div`
     width: 100%;
   }
 `;
+
 const StyledLink = styled(Link)`
   font-size: 15px;
   padding: 0px 20px;
@@ -151,6 +217,18 @@ const StyledLink = styled(Link)`
     color: ${colors.primaryYellow};
   }
 `;
+
+const StyledPagesLink = styled(Link)`
+  font-size: 14px;
+  padding: 0px 20px;
+  text-decoration: none;
+  font-weight: 300;
+  color: ${colors.primaryYellow};
+  &:hover {
+    color: ${colors.primaryYellow};
+  }
+`;
+
 const StyledJoinLink = styled(Link)`
   border-radius: 0px;
   font-size: 16px;
@@ -169,7 +247,27 @@ const StyledJoinLink = styled(Link)`
   }
 `;
 
-const LinkGroup = styled.div``;
+const LinkGroup = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const NavPageDiv = styled.div`
+  position: relative;
+`;
+const PageDropDownDiv = styled.div`
+  position: absolute;
+  background-color: ${colors.neutrals2};
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  gap: 5px;
+  padding: 10px 5px;
+  border-radius: 10px;
+  top: 25px;
+  width: 200px;
+`;
 
 const StyledButtonGroup = styled.div`
   display: flex;

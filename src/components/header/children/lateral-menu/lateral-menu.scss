@@ -1,0 +1,95 @@
+@import "../../../../assets/styles/color.scss";
+@import "../../../../assets/styles/sizes.scss";
+
+.lateral-menu {
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: $gray-darkest;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  z-index: 60;
+
+  .header {
+    position: unset;
+    margin-bottom: 32px;
+  }
+
+  .logo {
+    margin: auto 0px;
+    display: flex;
+  }
+
+  .link-row {
+    --border-width: 0px;
+    display: block;
+    width: 100%;
+    border-left: $blue var(--border-width) solid;
+    padding: 16px calc(#{$screen-padding} - var(--border-width));
+    font-weight: 600;
+    font-size: 24px;
+    text-transform: capitalize;
+    color: $gray;
+
+    svg, path {
+      fill: #808191;
+    }
+  }
+
+  .link-row.selected {
+    --border-width: 3px;
+    color: #FCFCFD !important;
+    svg, path {
+      fill: #FCFCFD;
+    }
+  }
+
+  .link-row:hover {
+    color: #FCFCFD !important;
+    svg, path {
+      fill: #FCFCFD;
+    }
+  }
+
+  .connect-wallet-button,
+  .user-thumb-link {
+    // margin: auto $screen-padding 44px $screen-padding;
+    flex-shrink: 0;
+    height: 48px;
+    font-size: 16px;
+  }
+  .user-thumb {
+    margin-right: auto;
+  }
+
+  .buttons-container {
+    display: flex;
+    margin: auto;
+    margin-bottom: 0px;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 $screen-padding 42px;
+
+    .create-nft-button {
+      flex-basis: 140px;
+    }
+    .user-thumb-link {
+      flex-basis: 160px;
+    }
+    > * {
+      min-width: 0px;
+      flex-grow: 1;
+    }
+  }
+  @media (max-width: 576px){
+    .hide-section-for-blog {
+      &.buttons-container {
+        display: none;
+      }
+    }
+  }
+}

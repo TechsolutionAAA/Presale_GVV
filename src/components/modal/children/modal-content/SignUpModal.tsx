@@ -12,7 +12,7 @@ import {
 } from "../../../../core/hooks/rtkHooks";
 import { setShowAlertAction } from "../../../../core/store/slices/alertSlice";
 import {
-  setShowSignInModalAction,
+  setShowBuyWithModalAction,
   setShowSignUpModalAction,
 } from "../../../../core/store/slices/modalSlice";
 import { CREATE_USER } from "../../../../graphql/Mutations";
@@ -33,7 +33,7 @@ const SignUpModal = () => {
 
   const go_to_sign_in = () => {
     dispatch(setShowSignUpModalAction(false));
-    dispatch(setShowSignInModalAction(true));
+    dispatch(setShowBuyWithModalAction(true));
   };
 
   const [createUser] = useMutation(CREATE_USER);
@@ -125,7 +125,7 @@ const SignUpModal = () => {
 
         if (response.data) {
           dispatch(setShowSignUpModalAction(false));
-          dispatch(setShowSignInModalAction(true));
+          dispatch(setShowBuyWithModalAction(true));
           dispatch(
             setShowAlertAction({
               showAlert: true,
