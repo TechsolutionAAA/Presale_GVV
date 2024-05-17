@@ -1,5 +1,6 @@
 import React from "react";
 import { Chart } from "react-google-charts";
+import { styled } from "styled-components";
 
 export const data = [
   ["x", "test"],
@@ -21,15 +22,26 @@ export const options = {
 const ChartComponent = () => {
   return (
     <>
-      <Chart
+      <StyledChart
         chartType="LineChart"
-        width="300px"
-        height="700px"
         data={data}
         options={options}
       />
     </>
   );
 };
+
+const StyledChart = styled(Chart)`
+  width: 430px;
+  height: 400px;
+  
+  @media screen and (max-width: 450px) {
+    width: 375px; 
+  }
+  
+  @media screen and (max-width: 375px) {
+    width: 300px;
+  }
+`;
 
 export default ChartComponent;
