@@ -13,11 +13,11 @@ const Footer = () => {
       <Content>
         <FooterText>Copyright © 2022 GVV. All Rights Reserved.</FooterText>
         <FooterAction>
-          <img src={Telegram}></img>
-          <img src={Twitter}></img>
-          <img src={Facebook}></img>
-          <img src={Youtube}></img>
-          <img src={Discord}></img>
+          <img src={Telegram} style={{ cursor: "pointer" }}></img>
+          <img src={Twitter} style={{ cursor: "pointer" }}></img>
+          <img src={Facebook} style={{ cursor: "pointer" }}></img>
+          <img src={Youtube} style={{ cursor: "pointer" }}></img>
+          <img src={Discord} style={{ cursor: "pointer" }}></img>
         </FooterAction>
       </Content>
     </Container>
