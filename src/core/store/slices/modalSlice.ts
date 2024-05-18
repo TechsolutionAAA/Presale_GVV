@@ -3,11 +3,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface IModalSlice {
 	showSignUpModal: boolean;
 	showSignInModal: boolean;
+	showLateralMenu: boolean;
+	showBuyWithModal: boolean;
 }
 
 const initialState = {
 	showSignUpModal: false,
-	showSignInModal: false
+	showSignInModal: false,
+	showLateralMenu: false,
+	showBuyWithModal: false,
 } as IModalSlice;
 
 const modalSlice = createSlice({
@@ -19,13 +23,21 @@ const modalSlice = createSlice({
 		},
 		setShowSignInModalAction(state, action: PayloadAction<boolean>) {
 			state.showSignInModal = action.payload
-		}
+		},
+		setShowBuyWithModalAction(state, action: PayloadAction<boolean>) {
+			state.showSignInModal = action.payload
+		},
+		setShowLateralMenu(state, action: PayloadAction<boolean>) {
+		  state.showLateralMenu = action.payload;
+		},
 	},
 });
 
 export const {
 	setShowSignUpModalAction,
-	setShowSignInModalAction
+	setShowSignInModalAction,
+	setShowBuyWithModalAction,
+	setShowLateralMenu,
 } = modalSlice.actions;
 
 export default modalSlice.reducer;

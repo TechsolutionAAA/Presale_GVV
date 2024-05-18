@@ -11,7 +11,7 @@ import {
   useAppSelector,
 } from "../../../../core/hooks/rtkHooks";
 import {
-  setShowSignInModalAction,
+  setShowBuyWithModalAction,
   setShowSignUpModalAction,
 } from "../../../../core/store/slices/modalSlice";
 
@@ -66,7 +66,7 @@ const ModalTemplate = (props: Props) => {
 
   const handleClose = () => {
     setOpen(false);
-    dispatch(setShowSignInModalAction(false));
+    dispatch(setShowBuyWithModalAction(false));
     dispatch(setShowSignUpModalAction(false));
   };
 

@@ -12,17 +12,23 @@ import {
 } from "../../../../core/hooks/rtkHooks";
 import { setShowAlertAction } from "../../../../core/store/slices/alertSlice";
 import {
-  setShowSignInModalAction,
+  setShowBuyWithModalAction,
   setShowSignUpModalAction,
 } from "../../../../core/store/slices/modalSlice";
 import { LOGIN_USER } from "../../../../graphql/Mutations";
 import CheckBox from "../../../checkbox/CheckBox";
-import { ButtonPrimarySmall } from "../../../styleguide/styleguide";
+import { ButtonPrimarySmall, H1 } from "../../../styleguide/styleguide";
 import ModalTemplate from "./ModalTemplet";
 import { StorageKeys } from "../../../../core/constants/base.const";
 import { dashboardPath } from "../../../../core/util/pathBuilder.util";
+import EtherSrc from "../../../../assets/webroot/img/index/ether.png";
+import BNBSrc from "../../../../assets/webroot/img/index/bnb.png";
+import MaticSrc from "../../../../assets/webroot/img/index/matic.png";
+import ERCSrc from "../../../../assets/webroot/img/index/erc20.png";
+import BEPSrc from "../../../../assets/webroot/img/index/bep20.png";
+import PTETHERSrc from "../../../../assets/webroot/img/index/ptether.png";
 
-const SignInModal = () => {
+const BuyWithModal = () => {
   const dispatch = useAppDispatch();
   const { showSignInModal } = useAppSelector((state) => state.modal);
 
@@ -33,7 +39,7 @@ const SignInModal = () => {
   const [password, setPassword] = useState("");
 
   const go_to_sign_up = () => {
-    dispatch(setShowSignInModalAction(false));
+    dispatch(setShowBuyWithModalAction(false));
     dispatch(setShowSignUpModalAction(true));
   };
 
@@ -69,7 +75,7 @@ const SignInModal = () => {
           response.data.loginUser.successful
         );
         if (response.data.loginUser.successful) {
-          dispatch(setShowSignInModalAction(false));
+          dispatch(setShowBuyWithModalAction(false));
           dispatch(
             setShowAlertAction({
               showAlert: true,
@@ -102,38 +108,52 @@ const SignInModal = () => {
       showsModal={showSignInModal}
       title={
         <StyledModalTitle>
-          <StyledLogoTitle>{`STAFIR`}</StyledLogoTitle>
-          <StyledGeneralTitle>{`SIGN IN`}</StyledGeneralTitle>
+          <StyledLogoTitle>{`BUY`}</StyledLogoTitle>
+          <StyledGeneralTitle>{`WITH`}</StyledGeneralTitle>
         </StyledModalTitle>
       }
       content={
         <StyledModalContent>
           <StyledMainContent>
-            <StyledTextField
-              placeholder={`Username or Email`}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setEmail(event.target.value)
-              }
-            />
-            <StyledTextField
-              placeholder={`Password`}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setPassword(event.target.value)
-              }
-              type="password"
-            />
+            <BuyWithChainDiv>
+              <BuyWithDivCoin>
+                <img src={EtherSrc} alt=""></img>
+                <StyledText>{`ETH`}</StyledText>
+              </BuyWithDivCoin>
+              <BuyWithDivCoin>
+                <img src={ERCSrc} alt=""></img>
+                <StyledText>{`ERC20 USDT`}</StyledText>
+              </BuyWithDivCoin>
+            </BuyWithChainDiv>
+            <BuyWithChainDiv>
+              <BuyWithDivCoin>
+                <img src={BNBSrc} alt=""></img>
+                <StyledText>{`BNB`}</StyledText>
+              </BuyWithDivCoin>
+              <BuyWithDivCoin>
+                <img src={BEPSrc} alt=""></img>
+                <StyledText>{`BEP20 USDT`}</StyledText>
+              </BuyWithDivCoin>
+            </BuyWithChainDiv>
+            <BuyWithChainDiv>
+              <BuyWithDivCoin>
+                <img src={MaticSrc} alt=""></img>
+                <StyledText>{`MATIC`}</StyledText>
+              </BuyWithDivCoin>
+              <BuyWithDivCoin>
+                <img src={PTETHERSrc} alt=""></img>
+                <StyledText>{`Polygon USDT`}</StyledText>
+              </BuyWithDivCoin>
+            </BuyWithChainDiv>
           </StyledMainContent>
-          <StyledExtraActionDiv>
-            <CheckBox label={`Remember Me`}></CheckBox>
-            <ForgetPassword>{`Forgot Password?`}</ForgetPassword>
-          </StyledExtraActionDiv>
-          <StyledButton onClick={sign_in}>{`SIGN IN`}</StyledButton>
         </StyledModalContent>
       }
       footer={
         <StyledFooter>
-          <StyledP>{`Don't have an account?`}</StyledP>
-          <StyledA onClick={go_to_sign_up}>Sign Up</StyledA>
+          <StyledP>{`Don't have wallet?`}</StyledP>
+          <StyledA
+            onClick={(e) => console.log("okay")}
+          >{`Connect Wallet`}</StyledA>
         </StyledFooter>
       }
     />
@@ -145,18 +165,21 @@ const StyledModalTitle = styled.div`
   flex-direction: row;
   justify-content: center;
   gap: 10px;
+  background-color: ${colors.mainColor};
+  border-radius: 10px;
+  padding: 10px;
 `;
 
 const StyledLogoTitle = styled.h1`
   font-size: 20px;
   font-weight: 700;
-  color: ${colors.middleBlue};
+  color: ${colors.primaryYellow};
 `;
 
 const StyledGeneralTitle = styled.h1`
   font-size: 20px;
   font-weight: 500;
-  color: ${colors.neutrals3};
+  color: ${colors.neutrals8};
 `;
 
 const StyledModalContent = styled.div`
@@ -183,6 +206,34 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
+const BuyWithChainDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  
+  @media screen and (min-width: ${RESPONSIVE.tablet}) {
+    flex-direction: row;
+  }
+`;
+
+const BuyWithDivCoin = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  background-color: ${colors.mainColor};
+  border-radius: 5px;
+  padding: 10px 5px;
+  gap: 30px;
+  width: 100%;
+  &:hover {
+    cursor: pointer;
+  }
+  @media screen and (min-width: ${RESPONSIVE.tablet}) {
+    width: 250px;
+  }
+`;
+
 const StyledButton = styled(ButtonPrimarySmall)`
   border-radius: 5px;
   font-size: 16px;
@@ -206,8 +257,8 @@ const StyledExtraActionDiv = styled.div`
 `;
 
 const StyledFooter = styled.div`
-  border-radius: 5px;
-  background-color: ${colors.neutrals6};
+  border-radius: 0px 0px 5px 5px;
+  background-color: ${colors.mainColor};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -225,11 +276,12 @@ const StyledFooter = styled.div`
 const StyledP = styled.p`
   font-weight: 500;
   font-size: 17px;
+  color: ${colors.neutrals7};
   text-align: center;
 `;
 
 const StyledA = styled.a`
-  color: ${colors.middleBlue};
+  color: ${colors.primaryYellow};
   font-size: 17px;
   text-decoration: none;
   font-weight: 500;
@@ -242,6 +294,17 @@ const StyledA = styled.a`
   }
 `;
 
+const StyledText = styled(H1)`
+  color: ${colors.primaryYellow};
+  font-size: 13px;
+  text-decoration: none;
+  font-weight: 500;
+  margin: -12px 0px;
+  @media screen and (min-width: ${RESPONSIVE.small}) {
+    font-size: 17px;
+  }
+`;
+
 const ForgetPassword = styled.p`
   color: ${colors.neutrals3};
   &:hover {
@@ -249,4 +312,4 @@ const ForgetPassword = styled.p`
   }
 `;
 
-export default SignInModal;
+export default BuyWithModal;

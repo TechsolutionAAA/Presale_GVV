@@ -9,10 +9,12 @@ import { colors } from "../../core/constants/styleguide.const";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import React, { useState } from "react";
+import { useAppDispatch } from "../../core/hooks/rtkHooks";
+import { setShowBuyWithModalAction } from "../../core/store/slices/modalSlice";
 
 const Round = () => {
   const [count, setCount] = useState(0);
-
+  const dispatch = useAppDispatch();
   const handlePlus = () => {
     let c: number = count;
     setCount(c + 1);
@@ -79,7 +81,7 @@ const Round = () => {
                 ></Countnumber>
                 <Countnumberplus onClick={handlePlus}>+</Countnumberplus>
               </CountNumberBox>
-              <RoundButton>BUY {count} $GVV</RoundButton>
+              <RoundButton onClick={(e) => dispatch(setShowBuyWithModalAction(true))}>BUY {count} $GVV</RoundButton>
             </RoundButtonGroup>
           </RightTopCard>
           <RightBottomCard>
