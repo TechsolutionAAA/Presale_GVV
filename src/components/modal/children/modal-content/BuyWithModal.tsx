@@ -180,6 +180,7 @@ const BuyWithModal = () => {
       await ApproveTx.wait();
 
       try {
+        console.log(GVVAmount, round)
         const BuyToken = await PreSaleContract.buyTokensByUSDT(
           String(GVVAmount), String(round),
           { from: account }
