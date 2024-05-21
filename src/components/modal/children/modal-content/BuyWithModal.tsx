@@ -149,45 +149,64 @@ const BuyWithModal = () => {
     handleConnect();
   }, []);
 
+  const switchNetwork = async (chainId: any) => {
+    console.log(chainId);
+    const ethereum = (window as any).ethereum;
+    try {
+      await ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: chainId }],
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // Ethereum
   const BuyGVV_ETH = async () => {
-    setIsBuyingETH(true);
-    const response = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
-    );
-    const data = await response.json();
 
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const PreSaleContract = new ethers.Contract(
-      PresaleVestingAddr,
-      PreSaleVestingABIJson,
-      signer
-    );
-    const GVVAmount = amount;
-    const round = roundNumber - 1;
-    const USDTAmount =
-      window.location.pathname === "/round1"
-        ? GVVAmount * 0.23
-        : window.location.pathname === "/round2"
-        ? GVVAmount * 0.34
-        : GVVAmount * 0.45;
-    const ethAmount = (Number(USDTAmount) / Number(data.ethereum.usd)).toFixed(
-      2
-    );
-    setIsBuyingETH(false);
-    try {
-      const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
-        String(GVVAmount),
-        String(round),
-        { from: account, value: ethers.utils.parseEther(ethAmount) }
-      );
+    const chainId = await ethereum.request({ method: "eth_chainId" });
+    if (chainId != "0xaa36a7") {
+      await switchNetwork("0xaa36a7");
+    } else {
       setIsBuyingETH(true);
-      await BuyToken.wait();
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+      );
+      const data = await response.json();
+
+      const PreSaleContract = new ethers.Contract(
+        PresaleVestingAddr,
+        PreSaleVestingABIJson,
+        signer
+      );
+      const GVVAmount = amount;
+      const round = roundNumber - 1;
+      const USDTAmount =
+        window.location.pathname === "/round1"
+          ? GVVAmount * 0.23
+          : window.location.pathname === "/round2"
+            ? GVVAmount * 0.34
+            : GVVAmount * 0.45;
+      const ethAmount = (Number(USDTAmount) / Number(data.ethereum.usd)).toFixed(
+        2
+      );
       setIsBuyingETH(false);
-    } catch (error) {
-      console.log(error);
+      try {
+        const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
+          String(GVVAmount),
+          String(round),
+          { from: account, value: ethers.utils.parseEther(ethAmount) }
+        );
+        setIsBuyingETH(true);
+        await BuyToken.wait();
+        setIsBuyingETH(false);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -196,50 +215,56 @@ const BuyWithModal = () => {
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const PreSaleContract = new ethers.Contract(
-      PresaleVestingAddr,
-      PreSaleVestingABIJson,
-      signer
-    );
-    const USDTContract = new ethers.Contract(USDTAddr, USDTABIJson, signer);
-    setIsBuyingErc20(false);
+    const chainId = await ethereum.request({ method: "eth_chainId" });
 
-    try {
-      const GVVAmount = amount;
-      const round = roundNumber - 1;
-      const USDTAmount =
-        window.location.pathname === "/round1"
-          ? GVVAmount * 0.23
-          : window.location.pathname === "/round2"
-          ? GVVAmount * 0.34
-          : GVVAmount * 0.45;
-      const ApproveTx = await USDTContract.approve(
+    if (chainId != "0xaa36a7") {
+      await switchNetwork("0xaa36a7");
+    } else {
+      const PreSaleContract = new ethers.Contract(
         PresaleVestingAddr,
-        ethers.utils.parseUnits(String(USDTAmount), 6),
-        { from: account }
+        PreSaleVestingABIJson,
+        signer
       );
-      setIsBuyingErc20(true);
-      await ApproveTx.wait();
+      const USDTContract = new ethers.Contract(USDTAddr, USDTABIJson, signer);
       setIsBuyingErc20(false);
+
       try {
-        console.log(GVVAmount, round)
-        const BuyToken = await PreSaleContract.buyTokensByUSDT(
-          String(GVVAmount),
-          String(round),
+        const GVVAmount = amount;
+        const round = roundNumber - 1;
+        const USDTAmount =
+          window.location.pathname === "/round1"
+            ? GVVAmount * 0.23
+            : window.location.pathname === "/round2"
+              ? GVVAmount * 0.34
+              : GVVAmount * 0.45;
+        const ApproveTx = await USDTContract.approve(
+          PresaleVestingAddr,
+          ethers.utils.parseUnits(String(USDTAmount), 6),
           { from: account }
         );
         setIsBuyingErc20(true);
-        await BuyToken.wait();
+        await ApproveTx.wait();
         setIsBuyingErc20(false);
+        try {
+          console.log(GVVAmount, round)
+          const BuyToken = await PreSaleContract.buyTokensByUSDT(
+            String(GVVAmount),
+            String(round),
+            { from: account }
+          );
+          setIsBuyingErc20(true);
+          await BuyToken.wait();
+          setIsBuyingErc20(false);
+        } catch (error) {
+          console.log(error);
+        }
       } catch (error) {
         console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
   };
   // Ethereum
-  
+
   // BSC
   const BuyGVV_BNB = async () => {
     const response = await fetch(
@@ -250,31 +275,36 @@ const BuyWithModal = () => {
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const PreSaleContract = new ethers.Contract(
-      BSC_PresaleVestingAddr,
-      PreSaleVestingABIJson,
-      signer
-    );
-    const GVVAmount = amount;
-    const round = roundNumber - 1;
-    const USDTAmount =
-      window.location.pathname === "/round1"
-        ? GVVAmount * 0.23
-        : window.location.pathname === "/round2"
-        ? GVVAmount * 0.34
-        : GVVAmount * 0.45;
-    const ethAmount = (Number(USDTAmount) / Number(data.ethereum.usd)).toFixed(
-      2
-    );
-    try {
-      const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
-        String(GVVAmount),
-        String(round),
-        { from: account, value: ethers.utils.parseEther(ethAmount) }
+    const chainId = ethereum.request({ method: "eth_chainId" });
+    if (chainId != "0x61") {
+      await switchNetwork("0x61");
+    } else {
+      const PreSaleContract = new ethers.Contract(
+        BSC_PresaleVestingAddr,
+        PreSaleVestingABIJson,
+        signer
       );
-      await BuyToken.wait();
-    } catch (error) {
-      console.log(error);
+      const GVVAmount = amount;
+      const round = roundNumber - 1;
+      const USDTAmount =
+        window.location.pathname === "/round1"
+          ? GVVAmount * 0.23
+          : window.location.pathname === "/round2"
+            ? GVVAmount * 0.34
+            : GVVAmount * 0.45;
+      const ethAmount = (Number(USDTAmount) / Number(data.binancecoin.usd)).toFixed(
+        2
+      );
+      try {
+        const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
+          String(GVVAmount),
+          String(round),
+          { from: account, value: ethers.utils.parseEther(ethAmount) }
+        );
+        await BuyToken.wait();
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -282,41 +312,47 @@ const BuyWithModal = () => {
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const PreSaleContract = new ethers.Contract(
-      BSC_PresaleVestingAddr,
-      PreSaleVestingABIJson,
-      signer
-    );
-    const USDTContract = new ethers.Contract(BSC_USDTAddr, USDTABIJson, signer);
+    const chainId = ethereum.request({ method: "eth_chainId" });
+    if (chainId != "0x61") {
+      await switchNetwork("0x61");
+    } else {
 
-    try {
-      const GVVAmount = amount;
-      const round = roundNumber - 1;
-      const USDTAmount =
-        window.location.pathname === "/round1"
-          ? GVVAmount * 0.23
-          : window.location.pathname === "/round2"
-          ? GVVAmount * 0.34
-          : GVVAmount * 0.45;
-      const ApproveTx = await USDTContract.approve(
-        PresaleVestingAddr,
-        ethers.utils.parseUnits(String(USDTAmount), 6),
-        { from: account }
+      const PreSaleContract = new ethers.Contract(
+        BSC_PresaleVestingAddr,
+        PreSaleVestingABIJson,
+        signer
       );
-      await ApproveTx.wait();
+      const USDTContract = new ethers.Contract(BSC_USDTAddr, USDTABIJson, signer);
+
       try {
-        console.log(GVVAmount, round)
-        const BuyToken = await PreSaleContract.buyTokensByUSDT(
-          String(GVVAmount),
-          String(round),
+        const GVVAmount = amount;
+        const round = roundNumber - 1;
+        const USDTAmount =
+          window.location.pathname === "/round1"
+            ? GVVAmount * 0.23
+            : window.location.pathname === "/round2"
+              ? GVVAmount * 0.34
+              : GVVAmount * 0.45;
+        const ApproveTx = await USDTContract.approve(
+          PresaleVestingAddr,
+          ethers.utils.parseUnits(String(USDTAmount), 6),
           { from: account }
         );
-        await BuyToken.wait();
+        await ApproveTx.wait();
+        try {
+          console.log(GVVAmount, round)
+          const BuyToken = await PreSaleContract.buyTokensByUSDT(
+            String(GVVAmount),
+            String(round),
+            { from: account }
+          );
+          await BuyToken.wait();
+        } catch (error) {
+          console.log(error);
+        }
       } catch (error) {
         console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
   };
   // BSC
@@ -328,34 +364,41 @@ const BuyWithModal = () => {
     );
     const data = await response.json();
 
+
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const PreSaleContract = new ethers.Contract(
-      Poly_PresaleVestingAddr,
-      PreSaleVestingABIJson,
-      signer
-    );
-    const GVVAmount = amount;
-    const round = roundNumber - 1;
-    const USDTAmount =
-      window.location.pathname === "/round1"
-        ? GVVAmount * 0.23
-        : window.location.pathname === "/round2"
-        ? GVVAmount * 0.34
-        : GVVAmount * 0.45;
-    const ethAmount = (Number(USDTAmount) / Number(data.ethereum.usd)).toFixed(
-      2
-    );
-    try {
-      const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
-        String(GVVAmount),
-        String(round),
-        { from: account, value: ethers.utils.parseEther(ethAmount) }
+
+    const chainId = ethereum.request({ method: "eth_chainId" });
+    if (chainId != "0x1388a") {
+      await switchNetwork("0x1388a");
+    } else {
+      const PreSaleContract = new ethers.Contract(
+        Poly_PresaleVestingAddr,
+        PreSaleVestingABIJson,
+        signer
       );
-      await BuyToken.wait();
-    } catch (error) {
-      console.log(error);
+      const GVVAmount = amount;
+      const round = roundNumber - 1;
+      const USDTAmount =
+        window.location.pathname === "/round1"
+          ? GVVAmount * 0.23
+          : window.location.pathname === "/round2"
+            ? GVVAmount * 0.34
+            : GVVAmount * 0.45;
+      const ethAmount = (Number(USDTAmount) / Number(data["matic-network"].usd)).toFixed(
+        2
+      );
+      try {
+        const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
+          String(GVVAmount),
+          String(round),
+          { from: account, value: ethers.utils.parseEther(ethAmount) }
+        );
+        await BuyToken.wait();
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -363,41 +406,48 @@ const BuyWithModal = () => {
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const PreSaleContract = new ethers.Contract(
-      Poly_PresaleVestingAddr,
-      PreSaleVestingABIJson,
-      signer
-    );
-    const USDTContract = new ethers.Contract(Poly_USDTAddr, USDTABIJson, signer);
 
-    try {
-      const GVVAmount = amount;
-      const round = roundNumber - 1;
-      const USDTAmount =
-        window.location.pathname === "/round1"
-          ? GVVAmount * 0.23
-          : window.location.pathname === "/round2"
-          ? GVVAmount * 0.34
-          : GVVAmount * 0.45;
-      const ApproveTx = await USDTContract.approve(
-        PresaleVestingAddr,
-        ethers.utils.parseUnits(String(USDTAmount), 6),
-        { from: account }
+    const chainId = ethereum.request({ method: "eth_chainId" });
+    if (chainId != "0x1388a") {
+      await switchNetwork("0x1388a");
+    } else {
+
+      const PreSaleContract = new ethers.Contract(
+        Poly_PresaleVestingAddr,
+        PreSaleVestingABIJson,
+        signer
       );
-      await ApproveTx.wait();
+      const USDTContract = new ethers.Contract(Poly_USDTAddr, USDTABIJson, signer);
+
       try {
-        console.log(GVVAmount, round)
-        const BuyToken = await PreSaleContract.buyTokensByUSDT(
-          String(GVVAmount),
-          String(round),
+        const GVVAmount = amount;
+        const round = roundNumber - 1;
+        const USDTAmount =
+          window.location.pathname === "/round1"
+            ? GVVAmount * 0.23
+            : window.location.pathname === "/round2"
+              ? GVVAmount * 0.34
+              : GVVAmount * 0.45;
+        const ApproveTx = await USDTContract.approve(
+          PresaleVestingAddr,
+          ethers.utils.parseUnits(String(USDTAmount), 6),
           { from: account }
         );
-        await BuyToken.wait();
+        await ApproveTx.wait();
+        try {
+          console.log(GVVAmount, round)
+          const BuyToken = await PreSaleContract.buyTokensByUSDT(
+            String(GVVAmount),
+            String(round),
+            { from: account }
+          );
+          await BuyToken.wait();
+        } catch (error) {
+          console.log(error);
+        }
       } catch (error) {
         console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
   };
 

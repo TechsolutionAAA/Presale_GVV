@@ -8,10 +8,14 @@ import Rectangle from "../../assets/webroot/img/index/rectangle.png";
 import { colors } from "../../core/constants/styleguide.const";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { setShowBuyWithModalAction } from "../../core/store/slices/modalSlice";
 import { useAppDispatch } from "../../core/hooks/rtkHooks";
 import { setAmount } from "../../core/store/slices/roundSlice";
+import { ethers } from "ethers";
+import PreSaleVestingABIJson from "../../contractABI/PreSaleVesting.json";
+
+import { Poly_PresaleVestingAddr, BSC_PresaleVestingAddr, PresaleVestingAddr } from "../../contractABI";
 
 export interface IRoundProps {
   round: number;
@@ -36,6 +40,57 @@ const Round = () => {
       setCount(c - 1);
     }
   };
+
+  const [ClaimAmount, setClaimAmount] = useState(0);
+  const [account, setAccount] = useState("");
+
+  useEffect(() => {
+    // wallet connection part
+    if ((window as any).ethereum) {
+      (window as any).ethereum
+        .request({
+          method: "eth_requestAccounts",
+        })
+        .then(async (accounts: string[]) => {
+          setAccount(accounts[0]);
+          const ethereum = (window as any).ethereum;
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const chainId = await ethereum.request({ method: "eth_chainId" });
+          if (chainId == "0x1388a") {
+            try {
+              const PreSaleContract = new ethers.Contract(Poly_PresaleVestingAddr, PreSaleVestingABIJson, signer);
+              const res = await PreSaleContract.getUserBuyAmount(accounts[0], "2");
+              setClaimAmount(res.toString());
+            } catch (error) {
+              console.log(error);
+            }
+          } else if (chainId == "0xaa36a7") {
+            try {
+              const PreSaleContract = new ethers.Contract(PresaleVestingAddr, PreSaleVestingABIJson, signer);
+              const res = await PreSaleContract.getUserBuyAmount(accounts[0], "2");
+              setClaimAmount(res.toString());
+            } catch (error) {
+              console.log(error);
+            }
+          } else if (chainId == "0x61") {
+            try {
+              const PreSaleContract = new ethers.Contract(BSC_PresaleVestingAddr, PreSaleVestingABIJson, signer);
+              const res = await PreSaleContract.getUserBuyAmount(accounts[0], "2");
+              setClaimAmount(res.toString());
+            } catch (error) {
+              console.log(error);
+            }
+          }
+        })
+        .catch((error: any) => {
+          console.log(error);
+        });
+    } else {
+      alert("Please install Metamask wallet!");
+      window.location.href = "/";
+    }
+  })
 
   return (
     <>
@@ -87,7 +142,8 @@ const Round = () => {
                 ></Countnumber>
                 <Countnumberplus onClick={handlePlus}>+</Countnumberplus>
               </CountNumberBox>
-              <RoundButton onClick={(e) => { dispatch(setShowBuyWithModalAction(true)); dispatch(setAmount({amount: Number(count)})) }}>BUY {count} $GVV</RoundButton>
+              <RoundButton onClick={(e) => { dispatch(setShowBuyWithModalAction(true)); dispatch(setAmount({ amount: Number(count) })) }}>BUY {count} $GVV</RoundButton>
+              <RoundButton>Claim {ClaimAmount} $GVV</RoundButton>
             </RoundButtonGroup>
           </RightTopCard>
           <RightBottomCard>
