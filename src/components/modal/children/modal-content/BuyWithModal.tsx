@@ -33,6 +33,12 @@ import {
   USDTAddr,
   GVVAddr,
   PresaleVestingAddr,
+  Poly_GVVAddr,
+  Poly_USDTAddr,
+  Poly_PresaleVestingAddr,
+  BSC_GVVAddr,
+  BSC_USDTAddr,
+  BSC_PresaleVestingAddr
 } from "../../../../contractABI/index";
 import USDTABIJson from "../../../../contractABI/USDT.json";
 import PreSaleVestingABIJson from "../../../../contractABI/PreSaleVesting.json";
@@ -143,14 +149,13 @@ const BuyWithModal = () => {
     handleConnect();
   }, []);
 
-  const buyGVVWithNative = async () => {
+  // Ethereum
+  const BuyGVV_ETH = async () => {
     setIsBuyingETH(true);
-    console.log("hello world");
     const response = await fetch(
       "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
     );
     const data = await response.json();
-    console.log(data.ethereum.usd);
 
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -168,12 +173,10 @@ const BuyWithModal = () => {
         : window.location.pathname === "/round2"
         ? GVVAmount * 0.34
         : GVVAmount * 0.45;
-    console.log(USDTAmount);
     const ethAmount = (Number(USDTAmount) / Number(data.ethereum.usd)).toFixed(
       2
     );
     setIsBuyingETH(false);
-    console.log(ethAmount);
     try {
       const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
         String(GVVAmount),
@@ -188,7 +191,7 @@ const BuyWithModal = () => {
     }
   };
 
-  const buyGVVWithUSDT = async () => {
+  const buyGVV_ERC20 = async () => {
     setIsBuyingErc20(true);
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -235,6 +238,168 @@ const BuyWithModal = () => {
       console.log(error);
     }
   };
+  // Ethereum
+  
+  // BSC
+  const BuyGVV_BNB = async () => {
+    const response = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
+    );
+    const data = await response.json();
+
+    const ethereum = (window as any).ethereum;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const PreSaleContract = new ethers.Contract(
+      BSC_PresaleVestingAddr,
+      PreSaleVestingABIJson,
+      signer
+    );
+    const GVVAmount = amount;
+    const round = roundNumber - 1;
+    const USDTAmount =
+      window.location.pathname === "/round1"
+        ? GVVAmount * 0.23
+        : window.location.pathname === "/round2"
+        ? GVVAmount * 0.34
+        : GVVAmount * 0.45;
+    const ethAmount = (Number(USDTAmount) / Number(data.ethereum.usd)).toFixed(
+      2
+    );
+    try {
+      const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
+        String(GVVAmount),
+        String(round),
+        { from: account, value: ethers.utils.parseEther(ethAmount) }
+      );
+      await BuyToken.wait();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const buyGVV_BRC20 = async () => {
+    const ethereum = (window as any).ethereum;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const PreSaleContract = new ethers.Contract(
+      BSC_PresaleVestingAddr,
+      PreSaleVestingABIJson,
+      signer
+    );
+    const USDTContract = new ethers.Contract(BSC_USDTAddr, USDTABIJson, signer);
+
+    try {
+      const GVVAmount = amount;
+      const round = roundNumber - 1;
+      const USDTAmount =
+        window.location.pathname === "/round1"
+          ? GVVAmount * 0.23
+          : window.location.pathname === "/round2"
+          ? GVVAmount * 0.34
+          : GVVAmount * 0.45;
+      const ApproveTx = await USDTContract.approve(
+        PresaleVestingAddr,
+        ethers.utils.parseUnits(String(USDTAmount), 6),
+        { from: account }
+      );
+      await ApproveTx.wait();
+      try {
+        console.log(GVVAmount, round)
+        const BuyToken = await PreSaleContract.buyTokensByUSDT(
+          String(GVVAmount),
+          String(round),
+          { from: account }
+        );
+        await BuyToken.wait();
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // BSC
+
+  // Polygon
+  const BuyGVV_Matic = async () => {
+    const response = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd"
+    );
+    const data = await response.json();
+
+    const ethereum = (window as any).ethereum;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const PreSaleContract = new ethers.Contract(
+      Poly_PresaleVestingAddr,
+      PreSaleVestingABIJson,
+      signer
+    );
+    const GVVAmount = amount;
+    const round = roundNumber - 1;
+    const USDTAmount =
+      window.location.pathname === "/round1"
+        ? GVVAmount * 0.23
+        : window.location.pathname === "/round2"
+        ? GVVAmount * 0.34
+        : GVVAmount * 0.45;
+    const ethAmount = (Number(USDTAmount) / Number(data.ethereum.usd)).toFixed(
+      2
+    );
+    try {
+      const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
+        String(GVVAmount),
+        String(round),
+        { from: account, value: ethers.utils.parseEther(ethAmount) }
+      );
+      await BuyToken.wait();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const buyGVV_Poly_USDT = async () => {
+    const ethereum = (window as any).ethereum;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const PreSaleContract = new ethers.Contract(
+      Poly_PresaleVestingAddr,
+      PreSaleVestingABIJson,
+      signer
+    );
+    const USDTContract = new ethers.Contract(Poly_USDTAddr, USDTABIJson, signer);
+
+    try {
+      const GVVAmount = amount;
+      const round = roundNumber - 1;
+      const USDTAmount =
+        window.location.pathname === "/round1"
+          ? GVVAmount * 0.23
+          : window.location.pathname === "/round2"
+          ? GVVAmount * 0.34
+          : GVVAmount * 0.45;
+      const ApproveTx = await USDTContract.approve(
+        PresaleVestingAddr,
+        ethers.utils.parseUnits(String(USDTAmount), 6),
+        { from: account }
+      );
+      await ApproveTx.wait();
+      try {
+        console.log(GVVAmount, round)
+        const BuyToken = await PreSaleContract.buyTokensByUSDT(
+          String(GVVAmount),
+          String(round),
+          { from: account }
+        );
+        await BuyToken.wait();
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <ModalTemplate
@@ -249,47 +414,43 @@ const BuyWithModal = () => {
         <StyledModalContent>
           <StyledMainContent>
             <BuyWithChainDiv>
-              <BuyWithDivCoin>
+              <BuyWithDivCoin onClick={() => BuyGVV_ETH()}>
                 {isBuyingETH === true ? (
                   <img src={LoaderSrc} alt=""></img>
                 ) : (
                   <>
                     <img src={EtherSrc} alt=""></img>
-                    <StyledText
-                      onClick={() => buyGVVWithNative()}
-                    >{`ETH`}</StyledText>
+                    <StyledText>{`ETH`}</StyledText>
                   </>
                 )}
               </BuyWithDivCoin>
-              <BuyWithDivCoin>
+              <BuyWithDivCoin onClick={() => buyGVV_ERC20()}>
                 {isBuyingErc20 === true ? (
                   <img src={LoaderSrc} alt=""></img>
                 ) : (
                   <>
                     <img src={ERCSrc} alt=""></img>
-                    <StyledText
-                      onClick={() => buyGVVWithUSDT()}
-                    >{`ERC20 USDT`}</StyledText>
+                    <StyledText>{`ERC20 USDT`}</StyledText>
                   </>
                 )}
               </BuyWithDivCoin>
             </BuyWithChainDiv>
             <BuyWithChainDiv>
-              <BuyWithDivCoin>
+              <BuyWithDivCoin onClick={() => BuyGVV_BNB()}>
                 <img src={BNBSrc} alt=""></img>
                 <StyledText>{`BNB`}</StyledText>
               </BuyWithDivCoin>
-              <BuyWithDivCoin>
+              <BuyWithDivCoin onClick={() => buyGVV_BRC20()}>
                 <img src={BEPSrc} alt=""></img>
                 <StyledText>{`BEP20 USDT`}</StyledText>
               </BuyWithDivCoin>
             </BuyWithChainDiv>
             <BuyWithChainDiv>
-              <BuyWithDivCoin>
+              <BuyWithDivCoin onClick={() => BuyGVV_Matic()}>
                 <img src={MaticSrc} alt=""></img>
                 <StyledText>{`MATIC`}</StyledText>
               </BuyWithDivCoin>
-              <BuyWithDivCoin>
+              <BuyWithDivCoin onClick={() => buyGVV_Poly_USDT()}>
                 <img src={PTETHERSrc} alt=""></img>
                 <StyledText>{`Polygon USDT`}</StyledText>
               </BuyWithDivCoin>
