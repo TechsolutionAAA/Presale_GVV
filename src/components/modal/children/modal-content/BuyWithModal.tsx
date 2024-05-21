@@ -34,9 +34,11 @@ import USDTABIJson from "../../../../contractABI/USDT.json";
 import PreSaleVestingABIJson from "../../../../contractABI/PreSaleVesting.json";
 import { useEffect } from "react";
 
+
 const BuyWithModal = () => {
   const dispatch = useAppDispatch();
   const { showSignInModal } = useAppSelector((state) => state.modal);
+  const { roundNumber, amount } = useAppSelector(state => state.round);
 
   const [loginUser] = useMutation(LOGIN_USER);
   const navigate = useNavigate();
@@ -108,7 +110,7 @@ const BuyWithModal = () => {
       }
     }
   };
-  
+
   const [account, setAccounts] = useState("");
 
   const handleConnect = () => {
@@ -133,21 +135,47 @@ const BuyWithModal = () => {
 
   useEffect(() => {
     handleConnect();
-  }, [])
+  }, []);
+
+  const buyGVVWithNative = async () => {
+    console.log("hello world")
+    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+    const data = await response.json();
+    console.log(data.ethereum.usd);
+
+    const ethereum = (window as any).ethereum;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const PreSaleContract = new ethers.Contract(PresaleVestingAddr, PreSaleVestingABIJson, signer);
+    const GVVAmount = amount;
+    const round = roundNumber;
+    const USDTAmount = roundNumber === 1 ? GVVAmount * 0.23 : roundNumber === 2 ? GVVAmount * 0.34 : GVVAmount * 0.45;
+    console.log(USDTAmount);
+    const ethAmount = (Number(USDTAmount) / Number(data.ethereum.usd)).toFixed(2);
+    console.log(ethAmount);
+    try {
+      const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
+        String(GVVAmount), String(round),
+        { from: account, value: ethers.utils.parseEther(ethAmount) }
+      );
+      await BuyToken.wait();
+    } catch (error) {
+      console.log(error)
+    }
+
+  };
 
   const buyGVVWithUSDT = async () => {
-    console.log("hello");
     const ethereum = (window as any).ethereum;
-    console.log(ethereum);
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
     const PreSaleContract = new ethers.Contract(PresaleVestingAddr, PreSaleVestingABIJson, signer);
     const USDTContract = new ethers.Contract(USDTAddr, USDTABIJson, signer);
 
     try {
-      const GVVAmount = 100;
-      const USDTAmount = GVVAmount * 0.23;
-      const round = 0;
+      const GVVAmount = amount;
+      const round = roundNumber;
+      const USDTAmount = roundNumber === 1 ? GVVAmount * 0.23 : roundNumber === 2 ? GVVAmount * 0.34 : GVVAmount * 0.45;
       const ApproveTx = await USDTContract.approve(PresaleVestingAddr, ethers.utils.parseUnits(String(USDTAmount), 6), { from: account });
       await ApproveTx.wait();
 
@@ -181,7 +209,7 @@ const BuyWithModal = () => {
             <BuyWithChainDiv>
               <BuyWithDivCoin>
                 <img src={EtherSrc} alt=""></img>
-                <StyledText>{`ETH`}</StyledText>
+                <StyledText onClick={() => buyGVVWithNative()}>{`ETH`}</StyledText>
               </BuyWithDivCoin>
               <BuyWithDivCoin>
                 <img src={ERCSrc} alt=""></img>

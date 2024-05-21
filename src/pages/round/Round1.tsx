@@ -11,6 +11,7 @@ import Footer from "../../components/footer/Footer";
 import React, { useState } from "react";
 import { useAppDispatch } from "../../core/hooks/rtkHooks";
 import { setShowBuyWithModalAction } from "../../core/store/slices/modalSlice";
+import { setAmount } from "../../core/store/slices/roundSlice";
 
 const Round = () => {
   const [count, setCount] = useState(0);
@@ -67,9 +68,6 @@ const Round = () => {
             </RoundContent>
             <br></br>
             <RoundRightSmTitle>
-              $GVV 1 - <RoundRightSmcolTitle>$0.23</RoundRightSmcolTitle>
-            </RoundRightSmTitle>
-            <RoundRightSmTitle>
               The Price will be - <RoundRightSmcolTitle>$ {(0.23 * count).toFixed(2)}</RoundRightSmcolTitle>
             </RoundRightSmTitle>
             <RoundButtonGroup>
@@ -81,7 +79,7 @@ const Round = () => {
                 ></Countnumber>
                 <Countnumberplus onClick={handlePlus}>+</Countnumberplus>
               </CountNumberBox>
-              <RoundButton onClick={(e) => dispatch(setShowBuyWithModalAction(true))}>BUY {count} $GVV</RoundButton>
+              <RoundButton onClick={(e: any) => {dispatch(setShowBuyWithModalAction(true)); dispatch(setAmount({amount: Number(count)}))}}>BUY {count} $GVV</RoundButton>
             </RoundButtonGroup>
           </RightTopCard>
           <RightBottomCard>

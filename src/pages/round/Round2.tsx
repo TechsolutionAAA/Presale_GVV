@@ -11,6 +11,7 @@ import Footer from "../../components/footer/Footer";
 import React, { useState } from "react";
 import { setShowBuyWithModalAction } from "../../core/store/slices/modalSlice";
 import { useAppDispatch } from "../../core/hooks/rtkHooks";
+import { setAmount } from "../../core/store/slices/roundSlice";
 
 const Round = () => {
   const [count, setCount] = useState(0);
@@ -82,7 +83,7 @@ const Round = () => {
                 ></Countnumber>
                 <Countnumberplus onClick={handlePlus}>+</Countnumberplus>
               </CountNumberBox>
-              <RoundButton onClick={(e) => dispatch(setShowBuyWithModalAction(true))}>BUY {count} $GVV</RoundButton>
+              <RoundButton onClick={(e) => {dispatch(setShowBuyWithModalAction(true)); dispatch(setAmount({amount: Number(count)}))}}>BUY {count} $GVV</RoundButton>
             </RoundButtonGroup>
           </RightTopCard>
           <RightBottomCard>
