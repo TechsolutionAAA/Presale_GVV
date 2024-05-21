@@ -1,12 +1,6 @@
-import { useEffect } from "react";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import {
-  BrowserRouter,
-  Route,
-  RouterProvider,
-  Routes,
-  createBrowserRouter,
-} from "react-router-dom";
+import { useEffect } from 'react';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import Faq from "./pages/faq/Faq";
 import Features from "./pages/features/Features";

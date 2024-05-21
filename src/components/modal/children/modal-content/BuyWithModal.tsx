@@ -10,6 +10,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../../core/hooks/rtkHooks";
+import { ethers } from "ethers";
 import { setShowAlertAction } from "../../../../core/store/slices/alertSlice";
 import {
   setShowBuyWithModalAction,
@@ -27,6 +28,11 @@ import MaticSrc from "../../../../assets/webroot/img/index/matic.png";
 import ERCSrc from "../../../../assets/webroot/img/index/erc20.png";
 import BEPSrc from "../../../../assets/webroot/img/index/bep20.png";
 import PTETHERSrc from "../../../../assets/webroot/img/index/ptether.png";
+
+import { USDTAddr, GVVAddr, PresaleVestingAddr } from "../../../../contractABI/index";
+import USDTABIJson from "../../../../contractABI/USDT.json";
+import PreSaleVestingABIJson from "../../../../contractABI/PreSaleVesting.json";
+import { useEffect } from "react";
 
 const BuyWithModal = () => {
   const dispatch = useAppDispatch();
@@ -102,6 +108,63 @@ const BuyWithModal = () => {
       }
     }
   };
+  
+  const [account, setAccounts] = useState("");
+
+  const handleConnect = () => {
+    // wallet connection part
+    if ((window as any).ethereum) {
+      (window as any).ethereum
+        .request({
+          method: "eth_requestAccounts",
+        })
+        .then((accounts: string[]) => {
+          setAccounts(accounts[0])
+        })
+        .catch((error: any) => {
+          alert(`Something went wrong: ${error}`);
+          window.location.href = "/";
+        });
+    } else {
+      alert("Please install Metamask wallet!");
+      window.location.href = "/";
+    }
+  }
+
+  useEffect(() => {
+    handleConnect();
+  }, [])
+
+  const buyGVVWithUSDT = async () => {
+    console.log("hello");
+    const ethereum = (window as any).ethereum;
+    console.log(ethereum);
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const PreSaleContract = new ethers.Contract(PresaleVestingAddr, PreSaleVestingABIJson, signer);
+    const USDTContract = new ethers.Contract(USDTAddr, USDTABIJson, signer);
+
+    try {
+      const GVVAmount = 100;
+      const USDTAmount = GVVAmount * 0.23;
+      const round = 0;
+      const ApproveTx = await USDTContract.approve(PresaleVestingAddr, ethers.utils.parseUnits(String(USDTAmount), 6), { from: account });
+      await ApproveTx.wait();
+
+      try {
+        const BuyToken = await PreSaleContract.buyTokensByUSDT(
+          String(GVVAmount), String(round),
+          { from: account }
+        );
+        await BuyToken.wait();
+      } catch (error) {
+        console.log(error)
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  };
 
   return (
     <ModalTemplate
@@ -122,7 +185,7 @@ const BuyWithModal = () => {
               </BuyWithDivCoin>
               <BuyWithDivCoin>
                 <img src={ERCSrc} alt=""></img>
-                <StyledText>{`ERC20 USDT`}</StyledText>
+                <StyledText onClick={() => buyGVVWithUSDT()}>{`ERC20 USDT`}</StyledText>
               </BuyWithDivCoin>
             </BuyWithChainDiv>
             <BuyWithChainDiv>

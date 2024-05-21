@@ -1,23 +1,23 @@
-import { LinearProgress } from "@mui/material";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useState } from "react";
-import { Else, If, Then } from "react-if";
-import { styled } from "styled-components";
+import { useEffect, useState } from 'react';
+import { Else, If, Then } from 'react-if';
+import { LinearProgress } from '@mui/material';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { styled } from 'styled-components';
 
-import GVVIndex from "../../components/gvvindex/GVVIndex";
+
 import OverviewIndex from "../../components/gvv-overview/overviewIndex";
 import Header from "../../components/header/Header";
-import HowItWorks from "../../components/how-it-works/HowItWorks";
-import AboutStafir from "../../components/about-stafir/AboutStafir";
+
+
 import ReadOurDocs from "../../components/features-we-offer/ReadOurDocs";
-import AndroidAndIosApp from "../../components/android-ios-app/AndroidAndIosApp";
+
 import ContactInformation from "../../components/contact-information/ContactInformation";
-import Footer from "../../components/footer/Footer";
+
 import { colors } from "../../core/constants/styleguide.const";
-import PhotoOnlyPage from "../../components/photo-only-page/PhotoOnlyPage";
+
 import Faqs from "../../components/faqs/Faqs";
-// const Header = lazy(() => import("../../components/header/Header"));
+
 
 const Home = () => {
   const [progress, setProgress] = useState(0);

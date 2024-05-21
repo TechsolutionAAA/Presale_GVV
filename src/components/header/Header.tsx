@@ -1,30 +1,23 @@
 import React, { useState } from "react";
-import { Else, If, Then } from "react-if";
-import { Link } from "react-router-dom";
-import { styled } from "styled-components";
+import { Else, If, Then } from 'react-if';
+import { Link } from 'react-router-dom';
+import { styled } from 'styled-components';
 import { useAppDispatch, useAppSelector } from "../../core/hooks/rtkHooks";
 
-import Logo from "../../assets/webroot/img/logos/logo(38x26).png";
+import Logo from '../../assets/webroot/img/logos/logo(38x26).png';
 import { RESPONSIVE } from "../../core/constants/responsive.const";
 import { colors } from "../../core/constants/styleguide.const";
 import { useWatchResize } from "../../core/hooks/useWatchResize";
 import {
-  faqPath,
-  featuresPath,
   homePath,
   portfolioPath,
-  round1Path,
   signPath,
   blogPath,
   contactPath
 } from "../../core/util/pathBuilder.util";
 import BurgerButton from "../button/burger-button/BurgerButton";
 import AlertComponent from "../alert/AlertComponent";
-import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
-import { createWeb3Modal } from "@web3modal/wagmi/react";
-import { arbitrum, mainnet } from "wagmi/chains";
 import { setRound } from "../../core/store/slices/roundSlice";
-import { COMMONS } from "../../assets/i18n/commons";
 import BuyWithModal from "../modal/children/modal-content/BuyWithModal";
 
 export const navLinks = [
@@ -50,51 +43,42 @@ export const navLinks = [
   }
 ];
 
-const projectId = "760f8d127d7a9b7c0dbb7dfc6ee6d1ca";
-if (!projectId) {
-  throw new Error("VITE_PROJECT_ID is not set");
-}
-
-// 2. Create wagmiConfig
-const wagmiConfig = defaultWagmiConfig({
-  chains: [mainnet, arbitrum],
-  projectId,
-  metadata: {
-    name: "Web3Modal React Example",
-    description: "Web3Modal React Example",
-    url: "",
-    icons: [],
-  },
-});
-
-// 3. Create modal
-createWeb3Modal({
-  wagmiConfig,
-  projectId,
-  themeMode: "light",
-  themeVariables: {
-    "--w3m-color-mix": "#00DCFF",
-    "--w3m-color-mix-strength": 20,
-  },
-});
-
 const Header = () => {
   const [showPagesDropdown, setShowPagesDropdown] = useState(false);
   const { smallerThanLarge } = useWatchResize();
   const dispatch = useAppDispatch();
 
-  const { showAlert } = useAppSelector((state) => state.alert);
-  const showSignInModal = useAppSelector((state) => state.modal);
+  const { showAlert } = useAppSelector((state: any) => state.alert);
+  const showSignInModal = useAppSelector((state: any) => state.modal);
+
+  
+  const [account, setAccounts] = useState("");
+
+  const handleConnect = () => {
+    // wallet connection part
+    if ((window as any).ethereum) {
+      (window as any).ethereum
+        .request({
+          method: "eth_requestAccounts",
+        })
+        .then((accounts: string[]) => {
+          setAccounts(accounts[0])
+        })
+        .catch((error: any) => {
+          alert(`Something went wrong: ${error}`);
+          window.location.href = "/";
+        });
+    } else {
+      alert("Please install Metamask wallet!");
+      window.location.href = "/";
+    }
+  }
 
   return (
     <>
-      <StyledHeader style={{ zIndex: 2 }}>
+      <StyledHeader>
         <LogoSection>
-          <img
-            src={Logo}
-            style={{ width: "25px", height: "24px" }}
-            alt="logo"
-          ></img>
+          <img src={Logo} style={{ width: "25px", height: "24px" }} alt="logo" />
           <h3 style={{ color: `${colors.neutrals8}` }}>{`GVV`}</h3>
         </LogoSection>
         <NavigateSection>
@@ -105,23 +89,23 @@ const Header = () => {
                 <NavPageDiv>
                   {showPagesDropdown && (
                     <PageDropDownDiv
-                      onMouseLeave={(e) => setShowPagesDropdown(false)}
+                      onMouseLeave={(e: any) => setShowPagesDropdown(false)}
                     >
                       <StyledPagesLink
                         to="/sign"
-                        onClick={(e) =>
+                        onClick={(e: any) =>
                           dispatch(setRound({ roundNumber: 1 }))
                         }
                       >{`Private Sales Stage 1`}</StyledPagesLink>
                       <StyledPagesLink
                         to="/sign"
-                        onClick={(e) =>
+                        onClick={(e: any) =>
                           dispatch(setRound({ roundNumber: 2 }))
                         }
                       >{`Private Sales Stage 2`}</StyledPagesLink>
                       <StyledPagesLink
                         to="/sign"
-                        onClick={(e) =>
+                        onClick={(e: any) =>
                           dispatch(setRound({ roundNumber: 3 }))
                         }
                       >{`Public Sales Round`}</StyledPagesLink>
@@ -129,7 +113,7 @@ const Header = () => {
                   )}
                   <StyledLink
                     to={""}
-                    onMouseEnter={(e) => setShowPagesDropdown(true)}
+                    onMouseEnter={(e: any) => setShowPagesDropdown(true)}
                   >{`Page`}</StyledLink>
                 </NavPageDiv>
                 <StyledLink to={"/portfolio"}>{`Portfolio`}</StyledLink>
@@ -143,8 +127,8 @@ const Header = () => {
             </Else>
           </If>
           <StyledButtonGroup>
-            <w3m-button />
             <StyledJoinLink to={"/sign"}>{`Join pre-Sell`}</StyledJoinLink>
+            {account ? (<StyledBtn onClick={() => window.location.reload()}>{account.substring(0, 6)}...{account.substring(38, 42)} Disconnect</StyledBtn>) : (<StyledBtn onClick={() => handleConnect()}>{`Connect`}</StyledBtn>)}
           </StyledButtonGroup>
         </NavigateSection>
       </StyledHeader>
@@ -156,7 +140,7 @@ const Header = () => {
 
 const StyledHeader = styled.div`
   position: fixed;
-  z-index: 1;
+  z-index: 2;
   top: 0;
   left: 0;
   right: 0;
@@ -237,6 +221,25 @@ const StyledJoinLink = styled(Link)`
   font-weight: 400;
   border: none;
   padding: 10px 20px;
+  background: ${colors.primaryYellow};
+  color: ${colors.mainColor};
+  &:hover {
+    color: ${colors.mainColor} !important;
+  }
+  @media screen and (max-width: 500px) {
+    font-size: 13px;
+  }
+`;
+
+const StyledBtn = styled.div`
+  border-radius: 0px;
+  font-size: 16px;
+  font-family: ABeeZee;
+  font-style: italic;
+  font-weight: 400;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
   background: ${colors.primaryYellow};
   color: ${colors.mainColor};
   &:hover {
