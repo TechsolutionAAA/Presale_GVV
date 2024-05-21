@@ -29,16 +29,22 @@ import ERCSrc from "../../../../assets/webroot/img/index/erc20.png";
 import BEPSrc from "../../../../assets/webroot/img/index/bep20.png";
 import PTETHERSrc from "../../../../assets/webroot/img/index/ptether.png";
 
-import { USDTAddr, GVVAddr, PresaleVestingAddr } from "../../../../contractABI/index";
+import {
+  USDTAddr,
+  GVVAddr,
+  PresaleVestingAddr,
+} from "../../../../contractABI/index";
 import USDTABIJson from "../../../../contractABI/USDT.json";
 import PreSaleVestingABIJson from "../../../../contractABI/PreSaleVesting.json";
 import { useEffect } from "react";
-
+import LoaderSrc from "../../../../assets/webroot/img/front/camera-loader.gif";
 
 const BuyWithModal = () => {
+  const [isBuyingETH, setIsBuyingETH] = useState(false);
+  const [isBuyingErc20, setIsBuyingErc20] = useState(false);
   const dispatch = useAppDispatch();
   const { showSignInModal } = useAppSelector((state) => state.modal);
-  const { roundNumber, amount } = useAppSelector(state => state.round);
+  const { roundNumber, amount } = useAppSelector((state) => state.round);
 
   const [loginUser] = useMutation(LOGIN_USER);
   const navigate = useNavigate();
@@ -121,7 +127,7 @@ const BuyWithModal = () => {
           method: "eth_requestAccounts",
         })
         .then((accounts: string[]) => {
-          setAccounts(accounts[0])
+          setAccounts(accounts[0]);
         })
         .catch((error: any) => {
           alert(`Something went wrong: ${error}`);
@@ -131,66 +137,102 @@ const BuyWithModal = () => {
       alert("Please install Metamask wallet!");
       window.location.href = "/";
     }
-  }
+  };
 
   useEffect(() => {
     handleConnect();
   }, []);
 
   const buyGVVWithNative = async () => {
-    console.log("hello world")
-    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+    setIsBuyingETH(true);
+    console.log("hello world");
+    const response = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+    );
     const data = await response.json();
     console.log(data.ethereum.usd);
 
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const PreSaleContract = new ethers.Contract(PresaleVestingAddr, PreSaleVestingABIJson, signer);
+    const PreSaleContract = new ethers.Contract(
+      PresaleVestingAddr,
+      PreSaleVestingABIJson,
+      signer
+    );
     const GVVAmount = amount;
-    const round = roundNumber;
-    const USDTAmount = roundNumber === 1 ? GVVAmount * 0.23 : roundNumber === 2 ? GVVAmount * 0.34 : GVVAmount * 0.45;
+    const round = roundNumber - 1;
+    const USDTAmount =
+      window.location.pathname === "/round1"
+        ? GVVAmount * 0.23
+        : window.location.pathname === "/round2"
+        ? GVVAmount * 0.34
+        : GVVAmount * 0.45;
     console.log(USDTAmount);
-    const ethAmount = (Number(USDTAmount) / Number(data.ethereum.usd)).toFixed(2);
+    const ethAmount = (Number(USDTAmount) / Number(data.ethereum.usd)).toFixed(
+      2
+    );
+    setIsBuyingETH(false);
     console.log(ethAmount);
     try {
       const BuyToken = await PreSaleContract.buyTokensByNativeCoin(
-        String(GVVAmount), String(round),
+        String(GVVAmount),
+        String(round),
         { from: account, value: ethers.utils.parseEther(ethAmount) }
       );
+      setIsBuyingETH(true);
       await BuyToken.wait();
+      setIsBuyingETH(false);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-
   };
 
   const buyGVVWithUSDT = async () => {
+    console.log(window.location.pathname === "/round1");
+    setIsBuyingErc20(true);
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const PreSaleContract = new ethers.Contract(PresaleVestingAddr, PreSaleVestingABIJson, signer);
+    const PreSaleContract = new ethers.Contract(
+      PresaleVestingAddr,
+      PreSaleVestingABIJson,
+      signer
+    );
     const USDTContract = new ethers.Contract(USDTAddr, USDTABIJson, signer);
+    setIsBuyingErc20(false);
 
     try {
       const GVVAmount = amount;
-      const round = roundNumber;
-      const USDTAmount = roundNumber === 1 ? GVVAmount * 0.23 : roundNumber === 2 ? GVVAmount * 0.34 : GVVAmount * 0.45;
-      const ApproveTx = await USDTContract.approve(PresaleVestingAddr, ethers.utils.parseUnits(String(USDTAmount), 6), { from: account });
+      const round = roundNumber - 1;
+      const USDTAmount =
+        window.location.pathname === "/round1"
+          ? GVVAmount * 0.23
+          : window.location.pathname === "/round2"
+          ? GVVAmount * 0.34
+          : GVVAmount * 0.45;
+      const ApproveTx = await USDTContract.approve(
+        PresaleVestingAddr,
+        ethers.utils.parseUnits(String(USDTAmount), 6),
+        { from: account }
+      );
+      setIsBuyingErc20(true);
       await ApproveTx.wait();
-
+      setIsBuyingErc20(false);
       try {
         const BuyToken = await PreSaleContract.buyTokensByUSDT(
-          String(GVVAmount), String(round),
+          String(GVVAmount),
+          String(round),
           { from: account }
         );
+        setIsBuyingErc20(true);
         await BuyToken.wait();
+        setIsBuyingErc20(false);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -208,12 +250,28 @@ const BuyWithModal = () => {
           <StyledMainContent>
             <BuyWithChainDiv>
               <BuyWithDivCoin>
-                <img src={EtherSrc} alt=""></img>
-                <StyledText onClick={() => buyGVVWithNative()}>{`ETH`}</StyledText>
+                {isBuyingETH === true ? (
+                  <img src={LoaderSrc} alt=""></img>
+                ) : (
+                  <>
+                    <img src={EtherSrc} alt=""></img>
+                    <StyledText
+                      onClick={() => buyGVVWithNative()}
+                    >{`ETH`}</StyledText>
+                  </>
+                )}
               </BuyWithDivCoin>
               <BuyWithDivCoin>
-                <img src={ERCSrc} alt=""></img>
-                <StyledText onClick={() => buyGVVWithUSDT()}>{`ERC20 USDT`}</StyledText>
+                {isBuyingErc20 === true ? (
+                  <img src={LoaderSrc} alt=""></img>
+                ) : (
+                  <>
+                    <img src={ERCSrc} alt=""></img>
+                    <StyledText
+                      onClick={() => buyGVVWithUSDT()}
+                    >{`ERC20 USDT`}</StyledText>
+                  </>
+                )}
               </BuyWithDivCoin>
             </BuyWithChainDiv>
             <BuyWithChainDiv>
@@ -301,7 +359,7 @@ const BuyWithChainDiv = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
-  
+
   @media screen and (min-width: ${RESPONSIVE.tablet}) {
     flex-direction: row;
   }
