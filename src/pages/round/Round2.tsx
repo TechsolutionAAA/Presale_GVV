@@ -83,8 +83,8 @@ const Round = () => {
           console.log(error);
         });
     } else {
-      alert("Please install Metamask wallet!");
-      window.location.href = "/";
+      // alert("Please install Metamask wallet!");
+      // window.location.href = "/";
     }
   })
 

@@ -140,8 +140,8 @@ const BuyWithModal = () => {
           window.location.href = "/";
         });
     } else {
-      alert("Please install Metamask wallet!");
-      window.location.href = "/";
+      // alert("Please install Metamask wallet!");
+      // window.location.href = "/";
     }
   };
 

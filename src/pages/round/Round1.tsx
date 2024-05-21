@@ -53,7 +53,7 @@ const Round = () => {
           const chainId = await ethereum.request({ method: "eth_chainId" });
           if (chainId == "0x1388a") {
             try {
-              const PreSaleContract = new ethers.Contract(Poly_PresaleVestingAddr,PreSaleVestingABIJson,signer);
+              const PreSaleContract = new ethers.Contract(Poly_PresaleVestingAddr, PreSaleVestingABIJson, signer);
               const res = await PreSaleContract.getUserBuyAmount(accounts[0], "0");
               setClaimAmount(res.toString());
             } catch (error) {
@@ -81,10 +81,10 @@ const Round = () => {
           console.log(error);
         });
     } else {
-      alert("Please install Metamask wallet!");
-      window.location.href = "/";
+      // alert("Please install Metamask wallet!");
+      // window.open('https://metamask.io/download/', '_blank');
     }
-  })
+  }, [])
 
   return (
     <>

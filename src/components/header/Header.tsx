@@ -51,7 +51,7 @@ const Header = () => {
   const { showAlert } = useAppSelector((state: any) => state.alert);
   const showSignInModal = useAppSelector((state: any) => state.modal);
 
-  
+
   const [account, setAccounts] = useState("");
 
   const handleConnect = () => {
@@ -70,7 +70,7 @@ const Header = () => {
         });
     } else {
       alert("Please install Metamask wallet!");
-      window.location.href = "/";
+      window.open('https://metamask.io/download/', '_blank');
     }
   }
 
