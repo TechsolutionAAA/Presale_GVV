@@ -189,7 +189,6 @@ const BuyWithModal = () => {
   };
 
   const buyGVVWithUSDT = async () => {
-    console.log(window.location.pathname === "/round1");
     setIsBuyingErc20(true);
     const ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum);
